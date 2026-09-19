@@ -111,7 +111,7 @@ func (h *Handler) enterFullname(c tele.Context) error {
 	}
 }
 func (h *Handler) chooseShop(c tele.Context) error {
-	markup := h.layout.Markup(c, "checklist:cancel:menu")
+	markup := h.layout.Markup(c, "checklist:shop:menu")
 	for {
 		if err := c.Send(h.layout.Text(c, "choose_shop_text"), markup); err != nil {
 			h.logger.Errorf("telegram.checklist.chooseShop send err: %v, telegramID: %d", err, c.Sender().ID)
