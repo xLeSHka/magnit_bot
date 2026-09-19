@@ -81,7 +81,8 @@ func New(config *config.Config, lc fx.Lifecycle) (*Logger, error) {
 	cores = append(cores, consoleCore)
 
 	if config.LogToFile {
-		logPath := filepath.Join(l.LogsPath, fmt.Sprintf("%s.log", time.Now().Format(config.LogFormat)))
+		// ДОБАВЛЕНО: .In(config.TimeLocation)
+		logPath := filepath.Join(l.LogsPath, fmt.Sprintf("%s.log", time.Now().In(config.TimeLocation).Format(config.LogFormat)))
 		fileWriter, errOpen := os.OpenFile(logPath, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0o644)
 		if errOpen != nil {
 			return nil, errOpen

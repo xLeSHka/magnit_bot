@@ -73,6 +73,10 @@ func (r Result) SaveSpreadsheet(path string) error {
 	if err = file.SetCellValue(reportSheetName, "B4", r.FinishedAt.Format("02.01.2006 15:04")); err != nil {
 		return err
 	}
+	// ДОБАВЛЕНА ячейка А5
+	if err = file.SetCellValue(reportSheetName, "A5", "Автор"); err != nil {
+		return err
+	}
 	if err = file.SetCellValue(reportSheetName, "B5", r.Session.FullName); err != nil {
 		return err
 	}

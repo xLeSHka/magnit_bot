@@ -35,6 +35,7 @@ type Service struct {
 	sessions  map[int64]*Session
 	results   []Result
 	logger    *logger.Logger
+	timeLoc   *time.Location
 }
 
 type FxOpts struct {
@@ -101,6 +102,7 @@ func New(opts FxOpts) (*Service, error) {
 		sessions:  make(map[int64]*Session),
 		results:   make([]Result, 0),
 		logger:    opts.Logger,
+		timeLoc:   opts.Config.TimeLocation,
 	}, nil
 }
 
@@ -118,7 +120,7 @@ func (s *Service) Start(ctx context.Context, telegramID int64, username string) 
 		Username:   username,
 		FullName:   user.FullName,
 		Answers:    make([]Answer, len(s.questions)),
-		CreatedAt:  time.Now(),
+		CreatedAt:  time.Now().In(s.timeLoc), // Используем локацию!
 	}
 
 	for i, q := range s.questions {
@@ -316,7 +318,7 @@ func (s *Service) Finish(ctx context.Context, telegramID int64) (Result, error) 
 
 	result := Result{
 		Session:    *cloneSession(session),
-		FinishedAt: time.Now(),
+		FinishedAt: time.Now().In(s.timeLoc), // Используем локацию!
 	}
 	s.results = append(s.results, result)
 	delete(s.sessions, telegramID)
@@ -358,7 +360,8 @@ func (r Result) AverageScore() float64 {
 func (r Result) Summary() string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "<b>Чеклист завершен</b>\n\n")
-	fmt.Fprintf(&b, "Проверяющий: %s (@%s)\n", html.EscapeString(r.Session.FullName), html.EscapeString(r.Session.Username))
+	// ЗДЕСЬ СМЕНИЛИ Проверяющий на Автор
+	fmt.Fprintf(&b, "Автор: %s (@%s)\n", html.EscapeString(r.Session.FullName), html.EscapeString(r.Session.Username))
 	fmt.Fprintf(&b, "Магазин: %s\n", html.EscapeString(r.Session.Shop))
 	fmt.Fprintf(&b, "Адрес: %s\n", html.EscapeString(r.Session.Address))
 	fmt.Fprintf(&b, "Средняя оценка: %.1f/10\n\n", r.AverageScore())

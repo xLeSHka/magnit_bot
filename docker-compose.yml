@@ -11,6 +11,7 @@ services:
       CHECKLIST_PATH: /app/checklist.txt
       LOGS_DIR: /app/logs
       TIMEZONE: ${TIMEZONE:-Europe/Moscow}
+      TZ: ${TIMEZONE:-Europe/Moscow}
       LOG_TO_FILE: ${LOG_TO_FILE:-true}
       DEBUG: ${DEBUG:-false}
     volumes:
