@@ -153,20 +153,26 @@ func (h *Handler) generalMenu(c tele.Context) error {
 		var currentRow []tele.Btn
 
 		for i, ans := range session.Answers {
-			scoreStr := "➖"
+			icon := "➖"
+			scoreStr := "не отвечен"
+
 			if ans.HasScore {
+				icon = "✅"
 				scoreStr = strconv.Itoa(ans.Score)
 			}
+
 			commentStr := ""
 			if ans.Comment != "" {
 				commentStr = " 💬"
 			}
-			b.WriteString(fmt.Sprintf("<b>%d.</b> %s - %s%s\n", ans.Question.Number, html.EscapeString(ans.Question.Text), scoreStr, commentStr))
+
+			b.WriteString(fmt.Sprintf("%s <b>%d.</b> %s - %s%s\n", icon, ans.Question.Number, html.EscapeString(ans.Question.Text), scoreStr, commentStr))
 
 			btn := tele.Btn{
 				Unique: fmt.Sprintf("q_%d", i),
 				Data:   strconv.Itoa(i),
-				Text:   strconv.Itoa(ans.Question.Number),
+				// Кнопки также будут содержать значки: "✅ 1" или "➖ 2"
+				Text: fmt.Sprintf("%s %d", icon, ans.Question.Number),
 			}
 			currentRow = append(currentRow, btn)
 			if len(currentRow) == 5 {
@@ -198,6 +204,7 @@ func (h *Handler) generalMenu(c tele.Context) error {
 		markup.Inline(rows...)
 
 		text := b.String()
+		// Ограничение Telegram на длину одного сообщения
 		if len(text) > 4000 {
 			text = text[:4000] + "...\n\n<i>Список сокращен, выберите вопрос:</i>"
 		}
