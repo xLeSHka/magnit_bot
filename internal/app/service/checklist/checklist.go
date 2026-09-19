@@ -411,7 +411,7 @@ func parseChecklist(path string) (map[string]User, []Section, []Question, error)
 		if matches := userRegexp.FindStringSubmatch(line); len(matches) == 3 {
 			username := normalizeUsername(matches[1])
 			users[username] = User{
-				Username: username,
+				Username: username[1:],
 				FullName: strings.TrimSpace(matches[2]),
 			}
 			continue
