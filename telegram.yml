@@ -78,6 +78,8 @@ buttons:
     text: 'Пройти заново'
 
 markups:
+  checklist:user:menu:
+    - [ checklist:cancel ]
   checklist:shop:menu:
     - [ checklist:shop:magnit, checklist:shop:pyaterochka ]
     - [ checklist:cancel ]

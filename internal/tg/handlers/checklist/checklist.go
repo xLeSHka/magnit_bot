@@ -57,9 +57,9 @@ func (h *Handler) start(c tele.Context) error {
 	h.checklistService.Cancel(context.Background(), c.Sender().ID)
 
 	session, err := h.checklistService.Start(context.Background(), c.Sender().ID, c.Sender().Username)
+
 	if err != nil {
 		if errors.Is(err, checklistService.ErrAccessDenied) {
-			h.logger.Infof("telegram.checklist.start access denied: telegramID: %d, username: %s", c.Sender().ID, c.Sender().Username)
 
 			return c.Send(h.layout.Text(c, "access_denied"))
 		}
@@ -67,12 +67,48 @@ func (h *Handler) start(c tele.Context) error {
 		h.logger.Errorf("telegram.checklist.start err: %v, telegramID: %d", err, c.Sender().ID)
 		return c.Send(h.layout.Text(c, "technical_issues"))
 	}
-
+	if session.FullName == "Undefined user" {
+		_ = c.Send(h.layout.Text(c, "start_text", struct{ Name string }{Name: session.FullName}))
+		return h.enterFullname(c)
+	}
 	h.logger.Infof("telegram.checklist.start info: telegramID: %d, username: %s", c.Sender().ID, session.Username)
 	_ = c.Send(h.layout.Text(c, "start_text", struct{ Name string }{Name: session.FullName}))
 	return h.chooseShop(c)
 }
 
+func (h *Handler) enterFullname(c tele.Context) error {
+	markup := h.layout.Markup(c, "checklist:user:menu")
+	for {
+		if err := c.Send(h.layout.Text(c, "enter_name_text"), markup); err != nil {
+			h.logger.Errorf("telegram.checklist.eterFullname send err: %v, telegramID: %d", err, c.Sender().ID)
+		}
+
+		resp, err := h.messageCollector.Get(context.Background(), c.Sender().ID, 0, endpoints(markup)...)
+		if err != nil {
+			h.logger.Errorf("telegram.checklist.eterFullname collect err: %v, telegramID: %d", err, c.Sender().ID)
+			return c.Send(h.layout.Text(c, "technical_issues"))
+		}
+		if resp.Canceled {
+			return nil
+		}
+		if resp.Callback == nil {
+			_ = c.Send(h.layout.Text(c, "input_error"))
+			continue
+		}
+
+		fullname := callbackValue(resp.Callback)
+		if fullname == "cancel" {
+			return h.cancel(c)
+		}
+
+		if _, err = h.checklistService.AddUser(context.Background(), c.Sender().ID, c.Sender().Username, fullname); err != nil {
+			_ = c.Send(h.layout.Text(c, "input_error"))
+			continue
+		}
+
+		return h.chooseShop(c)
+	}
+}
 func (h *Handler) chooseShop(c tele.Context) error {
 	markup := h.layout.Markup(c, "checklist:shop:menu")
 	for {

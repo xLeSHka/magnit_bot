@@ -111,15 +111,17 @@ func (s *Service) Start(ctx context.Context, telegramID int64, username string) 
 
 	username = normalizeUsername(username)
 	user, ok := s.users[username]
-
+	fullname := ""
 	if !ok {
-		return nil, ErrAccessDenied
+		fullname = "Undefined user"
+	} else {
+		fullname = user.FullName
 	}
 
 	session := &Session{
 		TelegramID: telegramID,
 		Username:   username,
-		FullName:   user.FullName,
+		FullName:   fullname,
 		Answers:    make([]Answer, len(s.questions)),
 		CreatedAt:  time.Now().In(s.timeLoc), // Используем локацию!
 	}
@@ -134,7 +136,23 @@ func (s *Service) Start(ctx context.Context, telegramID int64, username string) 
 
 	return cloneSession(session), nil
 }
-
+func (s *Service) AddUser(ctx context.Context, telegramID int64, username, fullname string) (*Session, error) {
+	_ = ctx
+	name := strings.TrimSpace(fullname)
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	session, ok := s.sessions[telegramID]
+	if !ok {
+		return nil, ErrSessionNotFound
+	}
+	session.Username = username
+	session.FullName = name
+	s.users[username] = User{
+		Username: username,
+		FullName: name,
+	}
+	return cloneSession(session), nil
+}
 func (s *Service) SetShop(ctx context.Context, telegramID int64, shop string) (*Session, error) {
 	_ = ctx
 

@@ -9,6 +9,8 @@ score_input_error: |
 start_text: |
   Привет, {{ .Name }}.
   Начинаем чеклист магазина.
+enter_name_text: |
+  Введите свое имя.
 choose_shop_text: |
   Выберите магазин.
 address_text: |
