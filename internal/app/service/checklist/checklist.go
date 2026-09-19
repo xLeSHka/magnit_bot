@@ -111,6 +111,7 @@ func (s *Service) Start(ctx context.Context, telegramID int64, username string) 
 
 	username = normalizeUsername(username)
 	user, ok := s.users[username]
+
 	if !ok {
 		return nil, ErrAccessDenied
 	}
@@ -411,7 +412,7 @@ func parseChecklist(path string) (map[string]User, []Section, []Question, error)
 		if matches := userRegexp.FindStringSubmatch(line); len(matches) == 3 {
 			username := normalizeUsername(matches[1])
 			users[username] = User{
-				Username: username[1:],
+				Username: username,
 				FullName: strings.TrimSpace(matches[2]),
 			}
 			continue

@@ -60,6 +60,7 @@ func (h *Handler) start(c tele.Context) error {
 	if err != nil {
 		if errors.Is(err, checklistService.ErrAccessDenied) {
 			h.logger.Infof("telegram.checklist.start access denied: telegramID: %d, username: %s", c.Sender().ID, c.Sender().Username)
+
 			return c.Send(h.layout.Text(c, "access_denied"))
 		}
 
