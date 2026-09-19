@@ -68,7 +68,6 @@ func (h *Handler) start(c tele.Context) error {
 		return c.Send(h.layout.Text(c, "technical_issues"))
 	}
 	if session.FullName == "Undefined user" {
-		_ = c.Send(h.layout.Text(c, "start_text", struct{ Name string }{Name: session.FullName}))
 		return h.enterFullname(c)
 	}
 	h.logger.Infof("telegram.checklist.start info: telegramID: %d, username: %s", c.Sender().ID, session.Username)
@@ -105,7 +104,11 @@ func (h *Handler) enterFullname(c tele.Context) error {
 			_ = c.Send(h.layout.Text(c, "input_error"))
 			continue
 		}
-
+		session, err := h.checklistService.GetSession(context.Background(), c.Sender().ID)
+		if err != nil {
+			return c.Send(h.layout.Text(c, "technical_issues"))
+		}
+		_ = c.Send(h.layout.Text(c, "start_text", struct{ Name string }{Name: session.FullName}))
 		return h.chooseShop(c)
 	}
 }
