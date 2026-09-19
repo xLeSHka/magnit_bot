@@ -18,6 +18,7 @@ WORKDIR /app
 
 COPY --from=builder /out/magnit_bot /app/magnit_bot
 COPY telegram.yml checklist.txt /app/
+COPY locales /app/locales
 
 RUN adduser -D -H -u 10001 appuser \
 	&& mkdir -p /app/logs \
