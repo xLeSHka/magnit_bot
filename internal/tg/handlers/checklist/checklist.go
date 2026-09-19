@@ -90,17 +90,15 @@ func (h *Handler) enterFullname(c tele.Context) error {
 		if resp.Canceled {
 			return nil
 		}
-		if resp.Callback == nil {
+		if resp.Callback != nil && callbackValue(resp.Callback) == "cancel" {
+			return h.cancel(c)
+		}
+		if resp.Message == nil || strings.TrimSpace(resp.Message.Text) == "" {
 			_ = c.Send(h.layout.Text(c, "input_error"))
 			continue
 		}
 
-		fullname := callbackValue(resp.Callback)
-		if fullname == "cancel" {
-			return h.cancel(c)
-		}
-
-		if _, err = h.checklistService.AddUser(context.Background(), c.Sender().ID, c.Sender().Username, fullname); err != nil {
+		if _, err = h.checklistService.AddUser(context.Background(), c.Sender().ID, c.Sender().Username, resp.Message.Text); err != nil {
 			_ = c.Send(h.layout.Text(c, "input_error"))
 			continue
 		}
@@ -113,7 +111,7 @@ func (h *Handler) enterFullname(c tele.Context) error {
 	}
 }
 func (h *Handler) chooseShop(c tele.Context) error {
-	markup := h.layout.Markup(c, "checklist:shop:menu")
+	markup := h.layout.Markup(c, "checklist:cancel:menu")
 	for {
 		if err := c.Send(h.layout.Text(c, "choose_shop_text"), markup); err != nil {
 			h.logger.Errorf("telegram.checklist.chooseShop send err: %v, telegramID: %d", err, c.Sender().ID)
