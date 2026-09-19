@@ -1,0 +1,95 @@
+settings:
+  token_env: TELEGRAM_BOT_TOKEN
+  parse_mode: HTML
+  long_poller:
+    Timeout: 10
+
+commands:
+  /start: Запустить чеклист
+
+buttons:
+  checklist:shop:magnit:
+    unique: checklist_shop_magnit
+    callback_data: 'Магнит'
+    text: 'Магнит'
+  checklist:shop:pyaterochka:
+    unique: checklist_shop_pyaterochka
+    callback_data: 'Пятерочка'
+    text: 'Пятерочка'
+  checklist:score:0:
+    unique: checklist_score_0
+    callback_data: '0'
+    text: '0'
+  checklist:score:1:
+    unique: checklist_score_1
+    callback_data: '1'
+    text: '1'
+  checklist:score:2:
+    unique: checklist_score_2
+    callback_data: '2'
+    text: '2'
+  checklist:score:3:
+    unique: checklist_score_3
+    callback_data: '3'
+    text: '3'
+  checklist:score:4:
+    unique: checklist_score_4
+    callback_data: '4'
+    text: '4'
+  checklist:score:5:
+    unique: checklist_score_5
+    callback_data: '5'
+    text: '5'
+  checklist:score:6:
+    unique: checklist_score_6
+    callback_data: '6'
+    text: '6'
+  checklist:score:7:
+    unique: checklist_score_7
+    callback_data: '7'
+    text: '7'
+  checklist:score:8:
+    unique: checklist_score_8
+    callback_data: '8'
+    text: '8'
+  checklist:score:9:
+    unique: checklist_score_9
+    callback_data: '9'
+    text: '9'
+  checklist:score:10:
+    unique: checklist_score_10
+    callback_data: '10'
+    text: '10'
+  checklist:menu:
+    unique: checklist_menu
+    callback_data: 'menu'
+    text: '📋 Меню вопросов'
+  checklist:next:
+    unique: checklist_next
+    callback_data: 'next'
+    text: '➡️ Пропустить'
+  checklist:cancel:
+    unique: checklist_cancel
+    callback_data: 'cancel'
+    text: 'Отмена'
+  checklist:restart:
+    unique: checklist_restart
+    callback_data: 'restart'
+    text: 'Пройти заново'
+
+markups:
+  checklist:shop:menu:
+    - [ checklist:shop:magnit, checklist:shop:pyaterochka ]
+    - [ checklist:cancel ]
+  checklist:score:menu:
+    - [ checklist:score:0, checklist:score:1, checklist:score:2, checklist:score:3 ]
+    - [ checklist:score:4, checklist:score:5, checklist:score:6, checklist:score:7 ]
+    - [ checklist:score:8, checklist:score:9, checklist:score:10 ]
+    - [ checklist:menu, checklist:next ]
+    - [ checklist:cancel ]
+  checklist:cancel:menu:
+    - [ checklist:cancel ]
+  checklist:finish:menu:
+    - [ checklist:restart ]
+  checklist:restart:menu:
+    - [ checklist:restart ]

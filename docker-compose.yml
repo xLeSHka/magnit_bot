@@ -1,0 +1,20 @@
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: magnit-bot:latest
+    container_name: magnit-bot
+    env_file:
+      - .env
+    environment:
+      CHECKLIST_PATH: /app/checklist.txt
+      LOGS_DIR: /app/logs
+      TIMEZONE: ${TIMEZONE:-Europe/Moscow}
+      LOG_TO_FILE: ${LOG_TO_FILE:-true}
+      DEBUG: ${DEBUG:-false}
+    volumes:
+      - ./checklist.txt:/app/checklist.txt:ro
+      - ./telegram.yml:/app/telegram.yml:ro
+      - ./logs:/app/logs
+    restart: unless-stopped

@@ -1,0 +1,101 @@
+# Go build artifacts and caches
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Go module cache
+go/pkg/mod/
+/vendor/
+.gocache/
+storage/
+
+# Version control
+.git/
+../AB_testing/.gitignore
+.gitattributes
+.gitmodules
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
+*.temp
+*.log
+.DS_Store
+Thumbs.db
+
+# Configuration files
+../AB_testing/dev.env
+*.env
+docker-compose.yml
+docker-compose.*.yml
+
+# Test files and coverage
+*_test.go
+/test/
+/tests/
+coverage.out
+cover.out
+*.test
+
+# Build and compile artifacts
+server
+*.o
+*.a
+*.out
+*.prof
+*.pprof
+*.trace
+*.memprof
+*.gcno
+*.gcda
+
+# Documentation
+README.md
+LICENSE
+CONTRIBUTING.md
+CHANGELOG.md
+AUTHORS
+NOTICE
+
+# Docker specific
+Dockerfile
+Dockerfile.*
+docker/
+compose/
+
+# Make and build system files
+make/
+build.sh
+build.bat
+scripts/
+tools/
+/bin
+/logs
+
+# Certificate and key files
+*.pem
+*.key
+*.crt
+*.cert
+*.p12
+*.pfx
+
+# Temporary and backup files
+*.bak
+*.old
+*.orig
+*~
+scratch/
+tmp/
+temp/
+
+# OS specific files
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
